@@ -1,0 +1,1249 @@
+outboundCall:
+  name: EUSA_OB_Collections_Customer_TRAIN
+  division: Home
+  startUpRef: "/outboundCall/tasks/task[Validate Campaign_12]"
+  defaultLanguage: en-us
+  supportedLanguages:
+    en-us:
+      defaultLanguageSkill:
+        lit:
+          name: EUSA_English-Spoken_TRAIN
+      textToSpeech:
+        defaultEngine:
+          voice: Jill
+    es-us:
+      defaultLanguageSkill:
+        lit:
+          name: EUSA_Spanish-Spoken_TRAIN
+      textToSpeech:
+        defaultEngine:
+          voice: Isabel
+  initialGreeting:
+    exp: AudioPlaybackOptions(ToAudioBlank(100), true)
+  variables:
+    - booleanVariable:
+        name: Flow.active
+        initialValue:
+          noValue: true
+    - stringCollectionVariable:
+        name: Flow.active_schedules
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.area_code
+        initialValue:
+          noValue: true
+    - currencyVariable:
+        name: Flow.customer_amout_due
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.customer_full_name
+        initialValue:
+          noValue: true
+    - booleanVariable:
+        name: Flow.db_active
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.db_state
+        initialValue:
+          noValue: true
+    - booleanVariable:
+        name: Flow.FriendlyReminder
+        initialValue:
+          noValue: true
+    - promptVariable:
+        name: Flow.sequence_msg_1
+        initialValue:
+          noValue: true
+    - promptVariable:
+        name: Flow.sequence_msg_2
+        initialValue:
+          noValue: true
+    - promptVariable:
+        name: Flow.sequence_msg_3
+        initialValue:
+          noValue: true
+    - promptVariable:
+        name: Flow.sequence_msg_4
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.state
+        initialValue:
+          noValue: true
+  settingsOutboundCall:
+    contactList:
+      lit:
+        name: JPT - HighWater - Contact List
+    wrapupCode:
+      lit:
+        name: Test-Outbound-WrapCode
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        lit:
+          name: PromptSystem.processing
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Sorry, an error occurred. Please try your call again.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: false
+  menus:
+    - menu:
+        name: Collection Outbound Menu
+        refId: Collection Outbound Menu_10
+        audio:
+          exp: AudioPlaybackOptions(ToAudio(Flow.sequence_msg_4), false)
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 4
+          repeatCount:
+            lit: 0
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuJumpToTask:
+              name: Make Payment
+              dtmf: digit_1
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Make Payment_279]"
+          - menuJumpToTask:
+              name: s/w CS
+              dtmf: digit_2
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[s_SLASH_w CS_286]"
+          - menuJumpToTask:
+              name: Polite Disconnect
+              dtmf: digit_9
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Polite Disconnect_295]"
+          - menuJumpToTask:
+              name: Repeat Menu
+              dtmf: digit_8
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Repeat Menu_291]"
+          - menuJumpToTask:
+              name: Repeat Once + Menu v2
+              refId: Repeat Once + Menu v2_308
+              dtmf: "digit_#"
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Repeat Once + Menu v2_300]"
+        defaultChildMenuRef: "./choices/menuJumpToTask[Repeat Once + Menu v2_308]"
+    - menu:
+        name: Language Selection
+        refId: Language Selection_22
+        audio:
+          prompt: Prompt.EUSA_LangSel
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 4
+          repeatCount:
+            lit: 1
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuTask:
+              name: English
+              refId: English_23
+              dtmf: digit_1
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              task:
+                actions:
+                  - setLanguage:
+                      name: English
+                      languageValue:
+                        lit: en-us
+                      language: en-us
+                  - jumpToTask:
+                      name: Jump to Conservation
+                      targetTaskRef: "/outboundCall/tasks/task[Conservation _SLASH_ Collections_154]"
+          - menuTask:
+              name: Spanish
+              dtmf: digit_2
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              task:
+                actions:
+                  - setLanguage:
+                      name: Spanish
+                      languageValue:
+                        lit: es-us
+                      language: es-us
+                  - jumpToTask:
+                      name: Jump to Conservation
+                      targetTaskRef: "/outboundCall/tasks/task[Conservation _SLASH_ Collections_154]"
+        defaultChildMenuRef: "./choices/menuTask[English_23]"
+    - menu:
+        name: Collection Outbound Menu v2
+        refId: Collection Outbound Menu v2_222
+        audio:
+          exp: AudioPlaybackOptions(ToAudio(Flow.sequence_msg_4), false)
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 4
+          repeatCount:
+            lit: 0
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuJumpToTask:
+              name: Make Payment
+              dtmf: digit_1
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Make Payment_279]"
+          - menuJumpToTask:
+              name: s/w CS
+              dtmf: digit_2
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[s_SLASH_w CS_286]"
+          - menuJumpToTask:
+              name: Repeat Menu
+              dtmf: digit_8
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Repeat Menu_291]"
+          - menuJumpToTask:
+              name: Polite Disconnect
+              refId: Polite Disconnect_312
+              dtmf: digit_9
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Polite Disconnect_295]"
+        defaultChildMenuRef: "./choices/menuJumpToTask[Polite Disconnect_312]"
+    - menu:
+        name: Friendly Reminder Menu Exception
+        refId: Friendly Reminder Menu Exception_251
+        audio:
+          exp: AudioPlaybackOptions(ToAudio(Flow.sequence_msg_4), false)
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 4
+          repeatCount:
+            lit: 0
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuJumpToTask:
+              name: Make Payment
+              dtmf: digit_1
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Make Payment_279]"
+          - menuJumpToTask:
+              name: Repeat Menu
+              dtmf: digit_8
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Repeat Menu_291]"
+          - menuJumpToTask:
+              name: Polite Disconnect
+              dtmf: digit_9
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Polite Disconnect_295]"
+          - menuJumpToTask:
+              name: Repeat Once + Menu v2
+              refId: Repeat Once + Menu v2_317
+              dtmf: "digit_#"
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Repeat Once + Menu v2_300]"
+        defaultChildMenuRef: "./choices/menuJumpToTask[Repeat Once + Menu v2_317]"
+    - menu:
+        name: Friendly Reminder Menu Exception v2
+        refId: Friendly Reminder Menu Exception v2_321
+        audio:
+          exp: AudioPlaybackOptions(ToAudio(Flow.sequence_msg_4), false)
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 4
+          repeatCount:
+            lit: 0
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuJumpToTask:
+              name: Make Payment
+              dtmf: digit_1
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Make Payment_279]"
+          - menuJumpToTask:
+              name: Repeat Menu
+              dtmf: digit_8
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Repeat Menu_291]"
+          - menuJumpToTask:
+              name: Polite Disconnect
+              refId: Polite Disconnect_324
+              dtmf: digit_9
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/outboundCall/tasks/task[Polite Disconnect_295]"
+        defaultChildMenuRef: "./choices/menuJumpToTask[Polite Disconnect_324]"
+  tasks:
+    - task:
+        name: 22d Bad Debt Sequence
+        refId: 22d Bad Debt Sequence_51
+        actions:
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY22CALL_1
+                - prompt:
+                    variable: Flow.sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY22CALL_2
+                - prompt:
+                    variable: Flow.sequence_msg_3
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY22CALL_3
+                - prompt:
+                    variable: Flow.sequence_msg_4
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY22CALL_4
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[Collections Outbound Menu Wavs_205]"
+    - task:
+        name: 28d Bad Debt Sequence
+        refId: 28d Bad Debt Sequence_52
+        actions:
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY28CALL_1
+                - prompt:
+                    variable: Flow.sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY28CALL_2
+                - prompt:
+                    variable: Flow.sequence_msg_3
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY28CALL_3
+                - prompt:
+                    variable: Flow.sequence_msg_4
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY28CALL_4
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[Collections Outbound Menu Wavs_205]"
+    - task:
+        name: Collections Outbound Menu Wavs
+        refId: Collections Outbound Menu Wavs_205
+        actions:
+          - playAudio:
+              name: Play Collection Wavs
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudio(Flow.sequence_msg_1), ToAudioTTS(Flow.customer_full_name), ToAudio(Flow.sequence_msg_2), ToAudioTTS(Call.Contact."Customer Address"), ToAudio(Flow.sequence_msg_3), ToAudioCurrency(Flow.customer_amout_due)), false)
+          - decision:
+              name: Decision
+              condition:
+                exp: Flow.FriendlyReminder == true
+              outputs:
+                "yes":
+                  actions:
+                    - jumpToMenu:
+                        name: Jump to Menu
+                        targetMenuRef: "/outboundCall/menus/menu[Friendly Reminder Menu Exception_251]"
+          - jumpToMenu:
+              name: Jump to Menu
+              targetMenuRef: "/outboundCall/menus/menu[Collection Outbound Menu_10]"
+    - task:
+        name: Conservation / Collections
+        refId: Conservation _SLASH_ Collections_154
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_CustomerCare
+          - updateData:
+              name: Update Data
+              statements:
+                - string:
+                    variable: Flow.area_code
+                    value:
+                      exp: Left(Right(Call.Contact."Media Address", 10),3)
+          - setParticipantData:
+              name: Set Participant Data
+              attributes:
+                - attribute:
+                    name:
+                      lit: Area code
+                    value:
+                      exp: Flow.area_code
+          - dataTableLookup:
+              name: Data Table Lookup
+              lookupValue:
+                exp: Flow.area_code
+              dataTable:
+                Area Codes to State - TRAIN:
+                  foundOutputs:
+                    state:
+                      var: Flow.db_state
+                    active:
+                      var: Flow.db_active
+                  failureOutputs:
+                    errorType:
+                      noValue: true
+                    errorMessage:
+                      noValue: true
+              outputs:
+                found:
+                  actions:
+                    - updateData:
+                        name: Update Data
+                        statements:
+                          - string:
+                              variable: Flow.state
+                              value:
+                                exp: Flow.db_state
+                          - boolean:
+                              variable: Flow.active
+                              value:
+                                lit: true
+                notFound:
+                  actions:
+                    - updateData:
+                        name: Update Data
+                        statements:
+                          - string:
+                              variable: Flow.state
+                              value:
+                                lit: AZ
+                          - boolean:
+                              variable: Flow.active
+                              value:
+                                lit: true
+                failure:
+                  actions:
+                    - updateData:
+                        name: Update Data
+                        statements:
+                          - string:
+                              variable: Flow.state
+                              value:
+                                lit: AZ
+                          - boolean:
+                              variable: Flow.active
+                              value:
+                                lit: true
+          - setParticipantData:
+              name: Set Participant Data
+              attributes:
+                - attribute:
+                    name:
+                      lit: State
+                    value:
+                      exp: Flow.state
+                - attribute:
+                    name:
+                      lit: Active
+                    value:
+                      exp: Flow.active
+          - decision:
+              name: Decision
+              condition:
+                exp: Flow.active == true
+              outputs:
+                "no":
+                  actions:
+                    - updateData:
+                        name: Update Data
+                        statements:
+                          - string:
+                              variable: Flow.state
+                              value:
+                                lit: AZ
+                          - boolean:
+                              variable: Flow.active
+                              value:
+                                lit: true
+          - switch:
+              name: 1- NM , 2-TX, Default- AZ
+              evaluate:
+                firstTrue:
+                  default:
+                    actions:
+                      - evaluateScheduleGroup:
+                          name: Evaluate AZ Schedule Group
+                          inServiceSchedules:
+                            var: Flow.active_schedules
+                          evaluate:
+                            now: true
+                          scheduleGroup:
+                            lit:
+                              name: EUSA_AZ_Schedulegroup_TRAIN
+                            name: EUSA_AZ_Schedulegroup_TRAIN
+                          emergencyGroup:
+                            lit:
+                              name: EUSA_Emergency_TRAIN
+                            name: EUSA_Emergency_TRAIN
+                          outputs:
+                            open:
+                              actions:
+                                - setParticipantData:
+                                    name: Set Participant Data
+                                    attributes:
+                                      - attribute:
+                                          name:
+                                            lit: Active Schedules
+                                          value:
+                                            exp: Flow.active_schedules
+                                - playAudio:
+                                    name: Hold For Next Representative
+                                    audio:
+                                      exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_hold), false)
+                                - playAudio:
+                                    name: Quality Assurance
+                                    audio:
+                                      exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_QA2), false)
+                                - transferToAcd:
+                                    name: Transfer to ACD
+                                    targetQueue:
+                                      lit:
+                                        name: EUSA_OB_Res_CC_TRAIN
+                                    acdSkills:
+                                      - acdSkill:
+                                          lit:
+                                            name: EUSA_Collections_TRAIN
+                                    overrideInQueueFlow:
+                                      name: EUSA_ResCom_InQueue_TRAIN
+                                    preTransferAudio:
+                                      exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+                                    failureTransferAudio:
+                                      exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+                                    priority:
+                                      lit: 0
+                                    languageSkill:
+                                      noValue: true
+                                    failureOutputs:
+                                      errorType:
+                                        noValue: true
+                                      errorMessage:
+                                        noValue: true
+                            closed:
+                              actions:
+                                - setParticipantData:
+                                    name: Set Participant Data
+                                    attributes:
+                                      - attribute:
+                                          name:
+                                            lit: Active Schedule
+                                          value:
+                                            exp: Flow.active_schedules
+                                - playAudio:
+                                    name: Play Closed
+                                    audio:
+                                      exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Closed), false)
+                            holiday:
+                              actions:
+                                - setParticipantData:
+                                    name: Set Participant Data
+                                    attributes:
+                                      - attribute:
+                                          name:
+                                            lit: Active Schedule
+                                          value:
+                                            exp: Flow.active_schedules
+                                - playAudio:
+                                    name: Play Holiday2
+                                    audio:
+                                      exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Holiday2), false)
+                            emergency:
+                              actions:
+                                - setParticipantData:
+                                    name: Set Participant Data
+                                    attributes:
+                                      - attribute:
+                                          name:
+                                            lit: Active Schedule
+                                          value:
+                                            exp: Flow.active_schedules
+                                - playAudio:
+                                    name: Play Critical/Emergency
+                                    audio:
+                                      exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Critical), false)
+                  cases:
+                    - case:
+                        value:
+                          exp: Flow.state == "NM"
+                        actions:
+                          - evaluateScheduleGroup:
+                              name: Evaluate NM Schedule Group
+                              inServiceSchedules:
+                                var: Flow.active_schedules
+                              evaluate:
+                                now: true
+                              scheduleGroup:
+                                lit:
+                                  name: EUSA_NM_Schedulegroup_TRAIN
+                                name: EUSA_NM_Schedulegroup_TRAIN
+                              emergencyGroup:
+                                lit:
+                                  name: EUSA_Emergency_TRAIN
+                                name: EUSA_Emergency_TRAIN
+                              outputs:
+                                open:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedules
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Hold For Next Representative
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_hold), false)
+                                    - playAudio:
+                                        name: Quality Assurance
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_QA2), false)
+                                    - transferToAcd:
+                                        name: Transfer to ACD
+                                        targetQueue:
+                                          lit:
+                                            name: EUSA_OB_Res_CC_TRAIN
+                                        acdSkills:
+                                          - acdSkill:
+                                              lit:
+                                                name: EUSA_Collections_TRAIN
+                                        overrideInQueueFlow:
+                                          name: EUSA_ResCom_InQueue_TRAIN
+                                        preTransferAudio:
+                                          exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+                                        failureTransferAudio:
+                                          exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+                                        priority:
+                                          lit: 0
+                                        languageSkill:
+                                          noValue: true
+                                        failureOutputs:
+                                          errorType:
+                                            noValue: true
+                                          errorMessage:
+                                            noValue: true
+                                closed:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedule
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Play Closed
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Closed), false)
+                                holiday:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedule
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Play Holiday2
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Holiday2), false)
+                                emergency:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedule
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Play Critical/Emergency
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Critical), false)
+                    - case:
+                        value:
+                          exp: Flow.state == "TX"
+                        actions:
+                          - evaluateScheduleGroup:
+                              name: Evaluate TX Schedule Group
+                              inServiceSchedules:
+                                var: Flow.active_schedules
+                              evaluate:
+                                now: true
+                              scheduleGroup:
+                                lit:
+                                  name: EUSA_TX_Schedulegroup_TRAIN
+                                name: EUSA_TX_Schedulegroup_TRAIN
+                              emergencyGroup:
+                                lit:
+                                  name: EUSA_Emergency_TRAIN
+                                name: EUSA_Emergency_TRAIN
+                              outputs:
+                                open:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedules
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Hold For Next Representative
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_hold), false)
+                                    - playAudio:
+                                        name: Quality Assurance
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_QA2), false)
+                                    - transferToAcd:
+                                        name: Transfer to ACD
+                                        targetQueue:
+                                          lit:
+                                            name: EUSA_OB_Res_CC_TRAIN
+                                        acdSkills:
+                                          - acdSkill:
+                                              lit:
+                                                name: EUSA_Collections_TRAIN
+                                        overrideInQueueFlow:
+                                          name: EUSA_ResCom_InQueue_TRAIN
+                                        preTransferAudio:
+                                          exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+                                        failureTransferAudio:
+                                          exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+                                        priority:
+                                          lit: 0
+                                        languageSkill:
+                                          noValue: true
+                                        failureOutputs:
+                                          errorType:
+                                            noValue: true
+                                          errorMessage:
+                                            noValue: true
+                                closed:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedule
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Play Closed
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Closed), false)
+                                holiday:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedule
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Play Holiday2
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Holiday2), false)
+                                emergency:
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Active Schedule
+                                              value:
+                                                exp: Flow.active_schedules
+                                    - playAudio:
+                                        name: Play Critical/Emergency
+                                        audio:
+                                          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Critical), false)
+          - setParticipantData:
+              name: Set Participant Data
+              attributes:
+                - attribute:
+                    name:
+                      lit: Active Schedule
+                    value:
+                      exp: Flow.active_schedules
+          - playAudio:
+              name: Polite Disconnect Message
+              audio:
+                exp: AudioPlaybackOptions(ToAudio(Prompt.CampaignPoliteDisconnect), false)
+          - disconnect:
+              name: Disconnect
+    - task:
+        name: Disconnect Gaz Sequence
+        refId: Disconnect Gaz Sequence_50
+        actions:
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_1
+                - prompt:
+                    variable: Flow.sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_2
+                - prompt:
+                    variable: Flow.sequence_msg_3
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_3
+                - prompt:
+                    variable: Flow.sequence_msg_4
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_4
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[Collections Outbound Menu Wavs_205]"
+    - task:
+        name: Disconnect Water Sequence
+        refId: Disconnect Water Sequence_49
+        actions:
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_1
+                - prompt:
+                    variable: Flow.sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_2
+                - prompt:
+                    variable: Flow.sequence_msg_3
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_3
+                - prompt:
+                    variable: Flow.sequence_msg_4
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECTCALL_4
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[Collections Outbound Menu Wavs_205]"
+    - task:
+        name: Friendly Reminder Sequence
+        refId: Friendly Reminder Sequence_48
+        actions:
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_FRIENDLYREMINDER_1
+                - prompt:
+                    variable: Flow.sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_FRIENDLYREMINDER_2
+                - prompt:
+                    variable: Flow.sequence_msg_3
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_FRIENDLYREMINDER_3
+                - prompt:
+                    variable: Flow.sequence_msg_4
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_FRIENDLYREMINDER_4
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[Collections Outbound Menu Wavs_205]"
+    - task:
+        name: Validate Campaign
+        refId: Validate Campaign_12
+        actions:
+          - updateData:
+              name: Update Data
+              statements:
+                - string:
+                    variable: Flow.customer_full_name
+                    value:
+                      exp: Call.Contact."Customer First Name" + " " + Call.Contact."Customer Last Name"
+                - currency:
+                    variable: Flow.customer_amout_due
+                    value:
+                      exp: ToCurrency(Call.Contact."Amount Due"+"|USD")
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Incomplete
+          - switch:
+              name: BDCALL1 , BDCALL2 , CLDISC2, CLREM1
+              evaluate:
+                firstTrue:
+                  default:
+                    actions:
+                      - setParticipantData:
+                          name: Set Participant Data
+                          attributes:
+                            - attribute:
+                                name:
+                                  lit: Campaign Name
+                                value:
+                                  exp: "\"Task Type Not Recognized \" + Call.Contact.\"Alert Type\""
+                      - playAudio:
+                          name: Play Polite Disconnect
+                          audio:
+                            prompt: Prompt.CampaignPoliteDisconnect
+                  cases:
+                    - case:
+                        value:
+                          exp: Call.Contact."Alert Type" == "BDCALL1"
+                        actions:
+                          - setParticipantData:
+                              name: Set Participant Data
+                              attributes:
+                                - attribute:
+                                    name:
+                                      lit: Campaign Name
+                                    value:
+                                      lit: "Coll_1 /Bad Debt – 22 Day "
+                          - jumpToTask:
+                              name: Jump to Reusable Task
+                              targetTaskRef: "/outboundCall/tasks/task[22d Bad Debt Sequence_51]"
+                    - case:
+                        value:
+                          exp: Call.Contact."Alert Type" == "BDCALL2"
+                        actions:
+                          - setParticipantData:
+                              name: Set Participant Data
+                              attributes:
+                                - attribute:
+                                    name:
+                                      lit: Campaign Name
+                                    value:
+                                      lit: "Coll_2/Bad Debt – 28 Day "
+                          - jumpToTask:
+                              name: Jump to Reusable Task
+                              targetTaskRef: "/outboundCall/tasks/task[28d Bad Debt Sequence_52]"
+                    - case:
+                        value:
+                          exp: Call.Contact."Alert Type" == "CLDISC2"
+                        actions:
+                          - setParticipantData:
+                              name: Set Participant Data
+                              attributes:
+                                - attribute:
+                                    name:
+                                      lit: Campaign Name
+                                    value:
+                                      lit: Disconnect
+                          - decision:
+                              name: Gaz? (TX)
+                              condition:
+                                exp: Call.Contact."Customer State" == "TX"
+                              outputs:
+                                "yes":
+                                  actions:
+                                    - jumpToTask:
+                                        name: Jump to Reusable Task
+                                        targetTaskRef: "/outboundCall/tasks/task[Disconnect Gaz Sequence_50]"
+                                "no":
+                                  actions:
+                                    - jumpToTask:
+                                        name: Jump to Reusable Task
+                                        targetTaskRef: "/outboundCall/tasks/task[Disconnect Water Sequence_49]"
+                    - case:
+                        value:
+                          exp: Call.Contact."Alert Type" == "CLREM1"
+                        actions:
+                          - updateData:
+                              name: Update Data
+                              statements:
+                                - boolean:
+                                    variable: Flow.FriendlyReminder
+                                    value:
+                                      lit: true
+                          - setParticipantData:
+                              name: Set Participant Data
+                              attributes:
+                                - attribute:
+                                    name:
+                                      lit: Campaign Name
+                                    value:
+                                      lit: Reminder
+                          - jumpToTask:
+                              name: Jump to Reusable Task
+                              targetTaskRef: "/outboundCall/tasks/task[Friendly Reminder Sequence_48]"
+          - disconnect:
+              name: Disconnect
+    - task:
+        name: Make Payment
+        refId: Make Payment_279
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Complete
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Payment
+          - transferToNumber:
+              name: Transfer to Kubra
+              targetNumber:
+                lit: "8339130790"
+              preTransferAudio:
+                prompt: Prompt.EUSA_Transfer
+              failureTransferAudio:
+                exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+              releaseLinkTransfer:
+                lit: true
+              connectTimeout:
+                noValue: true
+              failureOutputs:
+                errorType:
+                  noValue: true
+                errorMessage:
+                  noValue: true
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(ToAudio(Prompt.CampaignPoliteDisconnect), false)
+          - disconnect:
+              name: Disconnect
+    - task:
+        name: s/w CS
+        refId: s_SLASH_w CS_286
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Complete
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_Transfer), false)
+          - jumpToMenu:
+              name: Jump to Menu
+              targetMenuRef: "/outboundCall/menus/menu[Language Selection_22]"
+    - task:
+        name: Repeat Menu
+        refId: Repeat Menu_291
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Complete
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[Collections Outbound Menu Wavs_205]"
+    - task:
+        name: Polite Disconnect
+        refId: Polite Disconnect_295
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Complete
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(ToAudio(Prompt.CampaignPoliteDisconnect), false)
+          - disconnect:
+              name: Disconnect
+    - task:
+        name: Repeat Once + Menu v2
+        refId: Repeat Once + Menu v2_300
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Complete
+          - playAudio:
+              name: Play Collection Wavs
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudio(Flow.sequence_msg_1), ToAudioTTS(Flow.customer_full_name), ToAudio(Flow.sequence_msg_2), ToAudioTTS(Call.Contact."Customer Address"), ToAudio(Flow.sequence_msg_3), ToAudioCurrency(Flow.customer_amout_due)), false)
+          - decision:
+              name: Decision
+              condition:
+                exp: Flow.FriendlyReminder == true
+              outputs:
+                "yes":
+                  actions:
+                    - jumpToMenu:
+                        name: Jump to Menu
+                        targetMenuRef: "/outboundCall/menus/menu[Friendly Reminder Menu Exception v2_321]"
+          - jumpToMenu:
+              name: Jump to Menu
+              targetMenuRef: "/outboundCall/menus/menu[Collection Outbound Menu v2_222]"

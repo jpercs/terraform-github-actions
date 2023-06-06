@@ -1,0 +1,401 @@
+outboundCall:
+  name: EUSA_OB_Collections_Voicemail_DEV
+  division: Home
+  startUpRef: "/outboundCall/tasks/task[Validate Campaign_12]"
+  defaultLanguage: en-us
+  supportedLanguages:
+    en-us:
+      defaultLanguageSkill:
+        lit:
+          name: English-Spoken-Dev
+      textToSpeech:
+        defaultEngine:
+          voice: Jill
+    es-us:
+      defaultLanguageSkill:
+        lit:
+          name: Spanish-Spoken-Dev
+      textToSpeech:
+        defaultEngine:
+          voice: Isabel
+  initialGreeting:
+    exp: AudioPlaybackOptions(ToAudioBlank(100), true)
+  variables:
+    - promptVariable:
+        name: Flow.vm_sequence_msg_1
+        initialValue:
+          noValue: true
+    - promptVariable:
+        name: Flow.vm_sequence_msg_2
+        initialValue:
+          noValue: true
+  settingsOutboundCall:
+    contactList:
+      lit:
+        name: JPT - HighWater - Contact List
+    wrapupCode:
+      lit:
+        name: OB_VM Incomplete
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        lit:
+          name: PromptSystem.processing
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Sorry, an error occurred. Please try your call again.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: false
+  tasks:
+    - task:
+        name: 22d Bad Debt VM Sequence
+        refId: 22d Bad Debt VM Sequence_51
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Incomplete
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.vm_sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY22_VM_1
+                - prompt:
+                    variable: Flow.vm_sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY22_VM_2
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudio(Flow.vm_sequence_msg_1), ToAudioTTS(Call.Contact."Customer Address"), ToAudio(Flow.vm_sequence_msg_2)), false)
+          - flushAudio:
+              name: Flush Audio
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[VM Complete_154]"
+    - task:
+        name: 28d Bad Debt VM Sequence
+        refId: 28d Bad Debt VM Sequence_52
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Incomplete
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.vm_sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY28_VM_1
+                - prompt:
+                    variable: Flow.vm_sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_BADDEBTDAY28_VM_2
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudio(Flow.vm_sequence_msg_1), ToAudioTTS(Call.Contact."Customer Address"), ToAudio(Flow.vm_sequence_msg_2)), false)
+          - flushAudio:
+              name: Flush Audio
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[VM Complete_154]"
+    - task:
+        name: Disconnect Gaz VM Sequence
+        refId: Disconnect Gaz VM Sequence_50
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Incomplete
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.vm_sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECT_VM_1
+                - prompt:
+                    variable: Flow.vm_sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECT_VM_2
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudio(Flow.vm_sequence_msg_1), ToAudioTTS(Call.Contact."Customer Address"), ToAudio(Flow.vm_sequence_msg_2)), false)
+          - flushAudio:
+              name: Flush Audio
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[VM Complete_154]"
+    - task:
+        name: Disconnect Water VM Sequence
+        refId: Disconnect Water VM Sequence_49
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Incomplete
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.vm_sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECT_VM_1
+                - prompt:
+                    variable: Flow.vm_sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_DISCONNECT_VM_2
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudio(Flow.vm_sequence_msg_1), ToAudioTTS(Call.Contact."Customer Address"), ToAudio(Flow.vm_sequence_msg_2)), false)
+          - flushAudio:
+              name: Flush Audio
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[VM Complete_154]"
+    - task:
+        name: Friendly Reminder VM Sequence
+        refId: Friendly Reminder VM Sequence_48
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Incomplete
+          - updateData:
+              name: Update Data
+              statements:
+                - prompt:
+                    variable: Flow.vm_sequence_msg_1
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_FRIENDLYREMINDER_VM_1
+                - prompt:
+                    variable: Flow.vm_sequence_msg_2
+                    value:
+                      lit:
+                        name: Prompt.EUSA_OB_FRIENDLYREMINDER_VM_2
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudio(Flow.vm_sequence_msg_1), ToAudioTTS(Call.Contact."Customer Address"), ToAudio(Flow.vm_sequence_msg_2)), false)
+          - flushAudio:
+              name: Flush Audio
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[VM Complete_154]"
+    - task:
+        name: Validate Campaign
+        refId: Validate Campaign_12
+        actions:
+          - detectSilence:
+              name: Detect Silence
+              silenceDuration:
+                lit:
+                  seconds: 2
+              timeout:
+                lit:
+                  seconds: 60
+              outputs:
+                success:
+                  actions:
+                    - switch:
+                        name: BDCALL1 , BDCALL2 , CLDISC2, CLREM1
+                        evaluate:
+                          firstTrue:
+                            default:
+                              actions:
+                                - setParticipantData:
+                                    name: Set Participant Data
+                                    attributes:
+                                      - attribute:
+                                          name:
+                                            lit: Campaign Name
+                                          value:
+                                            exp: "\"Task Type Not Recognized \" + Call.Contact.\"Alert Type\""
+                                - playAudio:
+                                    name: Play Polite Disconnect
+                                    audio:
+                                      prompt: Prompt.Polite_Disconnect
+                            cases:
+                              - case:
+                                  value:
+                                    exp: Call.Contact."Alert Type" == "BDCALL1"
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Campaign Name
+                                              value:
+                                                lit: "Coll_1 /Bad Debt – 22 Day "
+                                    - jumpToTask:
+                                        name: Jump to Reusable Task
+                                        targetTaskRef: "/outboundCall/tasks/task[22d Bad Debt VM Sequence_51]"
+                              - case:
+                                  value:
+                                    exp: Call.Contact."Alert Type" == "BDCALL2"
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Campaign Name
+                                              value:
+                                                lit: "Coll_2/Bad Debt – 28 Day "
+                                    - jumpToTask:
+                                        name: Jump to Reusable Task
+                                        targetTaskRef: "/outboundCall/tasks/task[28d Bad Debt VM Sequence_52]"
+                              - case:
+                                  value:
+                                    exp: Call.Contact."Alert Type" == "CLDISC2"
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Campaign Name
+                                              value:
+                                                lit: Disconnect
+                                    - decision:
+                                        name: Gaz? (TX)
+                                        condition:
+                                          exp: Call.Contact."Customer State" == "TX"
+                                        outputs:
+                                          "yes":
+                                            actions:
+                                              - jumpToTask:
+                                                  name: Jump to Reusable Task
+                                                  targetTaskRef: "/outboundCall/tasks/task[Disconnect Gaz VM Sequence_50]"
+                                          "no":
+                                            actions:
+                                              - jumpToTask:
+                                                  name: Jump to Reusable Task
+                                                  targetTaskRef: "/outboundCall/tasks/task[Disconnect Water VM Sequence_49]"
+                              - case:
+                                  value:
+                                    exp: Call.Contact."Alert Type" == "CLREM1"
+                                  actions:
+                                    - setParticipantData:
+                                        name: Set Participant Data
+                                        attributes:
+                                          - attribute:
+                                              name:
+                                                lit: Campaign Name
+                                              value:
+                                                lit: Reminder
+                                    - jumpToTask:
+                                        name: Jump to Reusable Task
+                                        targetTaskRef: "/outboundCall/tasks/task[Friendly Reminder VM Sequence_48]"
+                timeout:
+                  actions:
+                    - setParticipantData:
+                        name: Set Participant Data
+                        attributes:
+                          - attribute:
+                              name:
+                                lit: Debug
+                              value:
+                                lit: Failed to Detect SIlence - VM
+          - disconnect:
+              name: Disconnect
+    - task:
+        name: VM Complete
+        refId: VM Complete_154
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Complete
+          - setParticipantData:
+              name: Set Participant Data
+              attributes:
+                - attribute:
+                    name:
+                      lit: Debug
+                    value:
+                      lit: audio played completely
+          - disconnect:
+              name: Disconnect

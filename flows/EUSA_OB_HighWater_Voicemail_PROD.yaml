@@ -1,0 +1,188 @@
+outboundCall:
+  name: EUSA_OB_HighWater_Voicemail_PROD
+  division: Home
+  startUpRef: "/outboundCall/tasks/task[Play VM + WrapUp Code_12]"
+  defaultLanguage: en-us
+  supportedLanguages:
+    en-us:
+      defaultLanguageSkill:
+        lit:
+          name: EUSA_English-Spoken_PROD
+      textToSpeech:
+        defaultEngine:
+          voice: Jill
+    es-us:
+      defaultLanguageSkill:
+        lit:
+          name: EUSA_Spanish-Spoken_PROD
+      textToSpeech:
+        defaultEngine:
+          voice: Isabel
+  initialGreeting:
+    exp: AudioPlaybackOptions(ToAudioBlank(500), false)
+  variables:
+    - integerVariable:
+        name: Flow.actual_retry_count
+        initialValue:
+          noValue: true
+  settingsOutboundCall:
+    contactList:
+      lit:
+        name: JPT - HighWater - Contact List
+    wrapupCode:
+      lit:
+        name: OB_VM Incomplete
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        lit:
+          name: PromptSystem.processing
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Sorry, an error occurred. Please try your call again.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: true
+  tasks:
+    - task:
+        name: Play VM + WrapUp Code
+        refId: Play VM + WrapUp Code_12
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Incomplete
+          - callTask:
+              name: Call Task
+              targetTaskRef: "/outboundCall/tasks/task[Play Audio Sequence on Silence_33]"
+          - flushAudio:
+              name: Flush Audio
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/outboundCall/tasks/task[VM Complete_19]"
+    - task:
+        name: VM Complete
+        refId: VM Complete_19
+        actions:
+          - setParticipantData:
+              name: Set Participant Data
+              attributes:
+                - attribute:
+                    name:
+                      lit: Debug
+                    value:
+                      lit: audio played completely
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_VM Complete
+          - disconnect:
+              name: Disconnect
+    - task:
+        name: Play Audio Sequence on Silence
+        refId: Play Audio Sequence on Silence_33
+        actions:
+          - playAudioOnSilence:
+              name: Play Audio on Silence
+              audio:
+                exp: ToAudio(Prompt.EUSA_OB_HighWater_VM)
+              allowedRepeatCount:
+                noValue: true
+              actualRepeatCount:
+                var: Flow.actual_retry_count
+              silenceDuration:
+                noValue: true
+              timeout:
+                lit:
+                  seconds: 60
+              outputs:
+                success:
+                  actions:
+                    - setParticipantData:
+                        name: Set Participant Data
+                        attributes:
+                          - attribute:
+                              name:
+                                lit: Actual Retry Count
+                              value:
+                                exp: Flow.actual_retry_count
+                          - attribute:
+                              name:
+                                lit: Debug
+                              value:
+                                lit: Silence Detected
+                timeout:
+                  actions:
+                    - setParticipantData:
+                        name: Set Participant Data
+                        attributes:
+                          - attribute:
+                              name:
+                                lit: Debug
+                              value:
+                                lit: No Silence Detected
+          - endTask:
+              name: End Task
+              outputPath:
+                name: Default

@@ -1,0 +1,223 @@
+outboundCall:
+  name: EUSA_OB_HighWater_Customer_DEV
+  division: Home
+  startUpRef: "/outboundCall/tasks/task[Play MSG + WrapUp Code_12]"
+  defaultLanguage: en-us
+  supportedLanguages:
+    en-us:
+      defaultLanguageSkill:
+        lit:
+          name: English-Spoken-Dev
+      textToSpeech:
+        defaultEngine:
+          voice: Jill
+    es-us:
+      defaultLanguageSkill:
+        lit:
+          name: Spanish-Spoken-Dev
+      textToSpeech:
+        defaultEngine:
+          voice: Isabel
+  initialGreeting:
+    exp: AudioPlaybackOptions(ToAudioBlank(500), true)
+  settingsOutboundCall:
+    contactList:
+      lit:
+        name: JPT - HighWater - Contact List
+    wrapupCode:
+      lit:
+        name: Test-Outbound-WrapCode
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Sorry, an error occurred. Please try your call again.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: false
+  menus:
+    - menu:
+        name: HighWater Menu
+        refId: HighWater Menu_136
+        audio:
+          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_OB_HighWater), false)
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 4
+          repeatCount:
+            lit: 0
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuTask:
+              name: OB_Complete + Menu v2
+              refId: OB_Complete + Menu v2_148
+              dtmf: digit_*
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              task:
+                actions:
+                  - callTask:
+                      name: Call Task
+                      targetTaskRef: "/outboundCall/tasks/task[OB Complete_156]"
+                  - jumpToMenu:
+                      name: Jump to Menu
+                      targetMenuRef: "/outboundCall/menus/menu[HighWater Menu v2_138]"
+          - menuTask:
+              name: OB_Complete + Repeat Menu
+              dtmf: "digit_#"
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              task:
+                actions:
+                  - callTask:
+                      name: Call Task
+                      targetTaskRef: "/outboundCall/tasks/task[OB Complete_156]"
+                  - jumpToMenu:
+                      name: Jump to Menu
+                      targetMenuRef: "/outboundCall/menus/menu[HighWater Menu_136]"
+        defaultChildMenuRef: "./choices/menuTask[OB_Complete + Menu v2_148]"
+    - menu:
+        name: HighWater Menu v2
+        refId: HighWater Menu v2_138
+        audio:
+          exp: AudioPlaybackOptions(ToAudio(Prompt.EUSA_OB_HighWater), false)
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 4
+          repeatCount:
+            lit: 0
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuTask:
+              name: Polite Disconnect
+              refId: Polite Disconnect_140
+              dtmf: digit_*
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              task:
+                actions:
+                  - playAudio:
+                      name: Play Polite Disconnect
+                      audio:
+                        exp: AudioPlaybackOptions(ToAudio(Prompt.CampaignPoliteDisconnect), false)
+                  - disconnect:
+                      name: Disconnect
+          - menuPreviousMenu:
+              name: Previous Menu
+              dtmf: "digit_#"
+              globalDtmf: false
+              globalSpeechRecTerms: false
+        defaultChildMenuRef: "./choices/menuTask[Polite Disconnect_140]"
+  tasks:
+    - task:
+        name: Play MSG + WrapUp Code
+        refId: Play MSG + WrapUp Code_12
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Incomplete
+          - jumpToMenu:
+              name: Jump to Menu
+              targetMenuRef: "/outboundCall/menus/menu[HighWater Menu_136]"
+    - task:
+        name: OB Complete
+        refId: OB Complete_156
+        actions:
+          - setWrapupCode:
+              name: Set Wrapup Code
+              wrapupCode:
+                lit:
+                  name: OB_Complete
+          - endTask:
+              name: End Task
+              outputPath:
+                name: Default
